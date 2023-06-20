@@ -60,11 +60,26 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const name = request.body.name
     const number = request.body.number
+
+    if (!name || !number) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const nameExists = persons.find(person => person.name === name)
+
+    if(nameExists){
+        return response.status(400).json({
+            error: 'name already exists in database'
+        })
+    }
+
     const id = Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER)
-    const person = {id, name, number}
+    const person = { id, name, number }
     console.log(person)
     response.json(person)
-  })
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
