@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         "id": 1,
@@ -54,6 +56,15 @@ app.delete('/api/persons/:id', (request, response) => {
 
     response.status(204).end()
 })
+
+app.post('/api/persons', (request, response) => {
+    const name = request.body.name
+    const number = request.body.number
+    const id = Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER)
+    const person = {id, name, number}
+    console.log(person)
+    response.json(person)
+  })
 
 const PORT = 3001
 app.listen(PORT, () => {
