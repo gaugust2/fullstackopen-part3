@@ -4,6 +4,12 @@ const app = express()
 
 app.use(express.json())
 
+morgan.token("content", (req) => { 
+    return req.method === "POST" ? JSON.stringify(req.body) : "" 
+})
+
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :content"))
+
 let persons = [
     {
         "id": 1,
@@ -78,7 +84,6 @@ app.post('/api/persons', (request, response) => {
 
     const id = Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER)
     const person = { id, name, number }
-    console.log(person)
     response.json(person)
 })
 
