@@ -54,13 +54,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -71,16 +67,9 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const name = request.body.name
-    const number = request.body.number
+    const body = request.body
 
-    if (!name || !number) {
-        return response.status(400).json({
-            error: 'content missing'
-        })
-    }
-
-    const nameExists = persons.find(person => person.name === name)
+    /*const nameExists = persons.find(person => person.name === name)
 
     if(nameExists){
         return response.status(400).json({
@@ -88,9 +77,16 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const id = Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER)
-    const person = { id, name, number }
-    response.json(person)
+    const id = Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER)*/
+
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
+
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 const PORT = process.env.PORT || 3001
